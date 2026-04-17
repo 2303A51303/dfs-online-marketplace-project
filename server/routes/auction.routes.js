@@ -14,6 +14,9 @@ router.route('/api/auctions/bid/:userId')
 router.route('/api/auction/:auctionId')
   .get(auctionCtrl.read)
 
+router.route('/api/auctions/:auctionId')
+  .get(auctionCtrl.read)
+
 router.route('/api/auctions/by/:userId')
   .post(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.isSeller, auctionCtrl.create)
   .get(authCtrl.requireSignin, authCtrl.hasAuthorization, auctionCtrl.listBySeller)

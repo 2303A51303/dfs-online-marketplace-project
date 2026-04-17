@@ -5,9 +5,12 @@ import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
 import Grid from '@material-ui/core/Grid'
+import Button from '@material-ui/core/Button'
 import {read} from './api-shop.js'
 import Products from './../product/Products'
 import {listByShop} from './../product/api-product.js'
+import auth from '../auth/auth-helper'
+import {Link} from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -74,30 +77,16 @@ export default function Shop({match}) {
     }
 
   }, [match.params.shopId])
-  useEffect(() => {
-    const abortController = new AbortController()
-    const signal = abortController.signal
-
-    listByShop({
-      shopId: match.params.shopId
-    }, signal).then((data)=>{
-      if (data.error) {
-        setError(data.error)
-      } else {
-        setProducts(data)
-      }
-    })
-
-    return function cleanup(){
-      abortController.abort()
-    }
-
-  }, [match.params.shopId])
 
     const logoUrl = shop._id
           ? `/api/shops/logo/${shop._id}?${new Date().getTime()}`
           : '/api/shops/defaultphoto'
     return (<div className={classes.root}>
+      {error && (
+        <Typography component="p" color="error">
+          {error}
+        </Typography>
+      )}
       <Grid container spacing={8}>
         <Grid item xs={4} sm={4}>
           <Card className={classes.card}>
@@ -109,8 +98,11 @@ export default function Shop({match}) {
               <Avatar src={logoUrl} className={classes.bigAvatar}/><br/>
                 <Typography type="subheading" component="h2" className={classes.subheading}>
                   {shop.description}
-                </Typography><br/>
-            </CardContent>
+                </Typography><br/>              {auth.isAuthenticated() && shop.owner && auth.isAuthenticated().user._id === shop.owner._id && (
+                <Link to={`/seller/${shop._id}/products/new`}>
+                  <Button variant="contained" color="primary">Add Product</Button>
+                </Link>
+              )}            </CardContent>
           </Card>
         </Grid>
         <Grid item xs={8} sm={8}>

@@ -5,9 +5,7 @@ import Typography from '@material-ui/core/Typography'
 import auth from '../auth/auth-helper'
 import Grid from '@material-ui/core/Grid'
 import {makeStyles} from '@material-ui/core/styles'
-
-const io = require('socket.io-client')
-const socket = io()
+import {create} from './api-bid.js'
 
 const useStyles = makeStyles(theme => ({
     bidHistory: {
@@ -30,40 +28,34 @@ const useStyles = makeStyles(theme => ({
 export default function Bidding (props) {
     const classes = useStyles()
     const [bid, setBid] = useState('')
+    const [error, setError] = useState('')
 
     const jwt = auth.isAuthenticated()
 
     useEffect(() => {
-        socket.emit('join auction room', {room: props.auction._id})
-        return () => {
-            socket.emit('leave auction room', {
-              room: props.auction._id
-            })
-          }
+        // No need for socket connection with REST API
     }, [])
 
-    useEffect(() => {
-        socket.on('new bid', payload => {
-          props.updateBids(payload)
-        })
-        return () => {
-            socket.off('new bid')
-        }
-    })
     const handleChange = event => {
         setBid(event.target.value)
     }
     const placeBid = () => {
-        let newBid = {
-            bid: bid,
-            time: new Date(),
-            bidder: jwt.user
+        const bidData = {
+            bidAmount: parseFloat(bid)
         }
-        socket.emit('new bid', {
-            room: props.auction._id,
-            bidInfo:  newBid
+        create({
+            auctionId: props.auction._id
+        }, {
+            t: jwt.token
+        }, bidData).then((data) => {
+            if (data.error) {
+                setError(data.error)
+            } else {
+                setError('')
+                props.updateBids(data)
+                setBid('')
+            }
         })
-        setBid('')
     }
     const minBid = props.auction.bids && props.auction.bids.length> 0 ? props.auction.bids[0].bid : props.auction.startingBid
     return(
@@ -73,7 +65,9 @@ export default function Bidding (props) {
                         value={bid} onChange={handleChange} 
                         type="number" margin="normal"
                         helperText={`Enter $${Number(minBid)+1} or more`}
-                        className={classes.marginInput}/><br/>
+                        className={classes.marginInput}/>
+                <br/>
+                {error && <Typography component="p" color="error">{error}</Typography>}
                 <Button variant="contained" className={classes.marginBtn} color="secondary" disabled={bid < (minBid + 1)} onClick={placeBid} >Place Bid</Button><br/>
             </div>}
             <div className={classes.bidHistory}>

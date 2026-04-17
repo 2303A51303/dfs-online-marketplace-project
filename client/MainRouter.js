@@ -41,7 +41,7 @@ const MainRouter = () => {
         <Route path="/cart" component={Cart}/>
         <Route path="/product/:productId" component={Product}/>
         <Route path="/shops/all" component={Shops}/>
-        <Route path="/shops/:shopId" component={Shop}/>
+        <Route path="/shop/:shopId" component={Shop}/>
 
         <Route path="/order/:orderId" component={Order}/>
         <SellerRoute path="/seller/orders/:shop/:shopId" component={ShopOrders}/>

@@ -75,7 +75,7 @@ export default function Shops(){
         </Typography>
         <List dense>
           {shops.map((shop, i) => {
-            return <Link to={"/shops/"+shop._id} key={i}>
+            return <Link to={"/shop/"+shop._id} key={i}>
               <Divider/>
               <ListItem button>
                 <ListItemAvatar>

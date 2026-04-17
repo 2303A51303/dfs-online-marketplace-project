@@ -13,6 +13,7 @@ import productRoutes from './routes/product.routes'
 import orderRoutes from './routes/order.routes'
 import auctionRoutes from './routes/auction.routes'
 import featuredProductRoutes from './routes/featuredProduct.routes'
+import bidRoutes from './routes/bid.routes'
 
 // modules for server side rendering
 import React from 'react'
@@ -53,6 +54,7 @@ app.use('/', productRoutes)
 app.use('/', orderRoutes)
 app.use('/', auctionRoutes)
 app.use('/', featuredProductRoutes)
+app.use('/', bidRoutes)
 
 app.get('*', (req, res) => {
   const sheets = new ServerStyleSheets()

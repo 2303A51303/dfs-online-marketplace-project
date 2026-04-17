@@ -3,7 +3,6 @@ import app from './express'
 import mongoose from 'mongoose'
 import bidding from './controllers/bidding.controller'
 
-// Connection URL
 mongoose.Promise = global.Promise
 mongoose.connect(config.mongoUri, { 
   useNewUrlParser: true, 
@@ -17,7 +16,6 @@ mongoose.connection.on('disconnected', () => {
   console.log('MongoDB disconnected')
 })
 
-// Log successful connection
 mongoose.connection.on('connected', () => {
   console.log('MongoDB connected successfully')
 })

@@ -97,8 +97,11 @@ export default function Auction ({match}) {
           : '/api/auctions/defaultphoto'
   const currentDate = new Date()
     return (
-        <div className={classes.root}>
-              <Card className={classes.card}>
+        <div className={classes.root}>            {error && (
+                <Typography component="p" color="error">
+                    {error}
+                </Typography>
+            )}              <Card className={classes.card}>
                 <CardHeader
                   title={auction.itemName}
                   subheader={<span>
